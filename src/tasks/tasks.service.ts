@@ -32,4 +32,13 @@ export class TasksService {
         this.tasks.push(task);
         return task;
     }
+
+    updateTaskStatus(id: string, newStatus: TaskStatus):Task{
+        const currentTask = this.getTaskById(id);
+        currentTask.status = newStatus;
+
+        console.log(currentTask);
+
+        return currentTask;
+    }
 }
