@@ -6,61 +6,58 @@ import { GetTasksFilterDto } from './dto/get-tasks-filter.dto';
 
 @Injectable()
 export class TasksService {
-    private tasks: Task[] = [];
+  private tasks: Task[] = [];
 
-    getAllTasks(): Task[] {
-        return this.tasks;
+  getAllTasks(): Task[] {
+    return this.tasks;
+  }
+
+  getTasksWithFilters(filterDto: GetTasksFilterDto): Task[] {
+    const { status, search } = filterDto;
+    let tasks = this.getAllTasks();
+
+    if (status) {
+      tasks = tasks.filter(task => task.status === status);
     }
 
-    getTasksWithFilters(filterDto: GetTasksFilterDto):Task[]{
-        const { status, search } = filterDto;
-        let tasks = this.getAllTasks();
-    
-        if (status){
-            tasks = tasks.filter(
-                task => 
-                task.status === status)
-            ;
-        }
-
-        if (search){
-            tasks = tasks.filter(task => 
-                task.title.includes(search) ||
-                task.description.includes(search),
-            );
-        }
-    
-        return tasks;
-    } 
-
-    getTaskById(id: string): Task {
-        return this.tasks.find(task => task.id === id);
+    if (search) {
+      tasks = tasks.filter(
+        task =>
+          task.title.includes(search) || task.description.includes(search),
+      );
     }
 
-    deleteTaskById(id: string):void {
-       this.tasks = this.tasks.filter(task => task.id !== id);
-    }
+    return tasks;
+  }
 
-    createTask(createTaskDto: CreateTaskDto): Task{
-        const { title, description } = createTaskDto;
-        
-        const task: Task = {
-            id: v4(),
-            title,
-            description,
-            status: TaskStatus.OPEN,
-        };
+  getTaskById(id: string): Task {
+    return this.tasks.find(task => task.id === id);
+  }
 
-        this.tasks.push(task);
-        return task;
-    }
+  deleteTaskById(id: string): void {
+    this.tasks = this.tasks.filter(task => task.id !== id);
+  }
 
-    updateTaskStatus(id: string, newStatus: TaskStatus):Task{
-        const currentTask = this.getTaskById(id);
-        currentTask.status = newStatus;
+  createTask(createTaskDto: CreateTaskDto): Task {
+    const { title, description } = createTaskDto;
 
-        console.log(currentTask);
+    const task: Task = {
+      id: v4(),
+      title,
+      description,
+      status: TaskStatus.OPEN,
+    };
 
-        return currentTask;
-    }
+    this.tasks.push(task);
+    return task;
+  }
+
+  updateTaskStatus(id: string, newStatus: TaskStatus): Task {
+    const currentTask = this.getTaskById(id);
+    currentTask.status = newStatus;
+
+    console.log(currentTask);
+
+    return currentTask;
+  }
 }
