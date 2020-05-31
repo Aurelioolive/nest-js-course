@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, GoneException } from '@nestjs/common';
 import { CreateTaskDto } from './dto/create-task.dto';
 import { GetTasksFilterDto } from './dto/get-tasks-filter.dto';
 import { TaskRepository } from './task.repository';
@@ -27,6 +27,14 @@ export class TasksService {
     return this.taskRepository.createTask(createTaskDto);
   }
 
+  async deleteTaskById(id: number): Promise<void> {
+    const result = await this.taskRepository.delete(id);
+
+    if (result.affected === 0) {
+      throw new NotFoundException(`Task with ID ${id} not found`);
+    }
+  }
+
   /*
 
   getAllTasks(): Task[] {
@@ -50,13 +58,6 @@ export class TasksService {
 
     return tasks;
   }  
-
-  deleteTaskById(id: string): void {
-    const found = this.getTaskById(id);
-    this.tasks = this.tasks.filter(task => task.id !== found.id);
-  }
-
-  
 
   updateTaskStatus(id: string, newStatus: TaskStatus): Task {
     const currentTask = this.getTaskById(id);
