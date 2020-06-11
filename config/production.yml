@@ -1,2 +1,5 @@
+server:
+  origin: https://aurelio-task-manager-front-end.s3-sa-east-1.amazonaws.com
+
 db:
   synchronize: false
